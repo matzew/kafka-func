@@ -1,0 +1,17 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: kafka-func-consumer-scaler
+spec:
+  scaleTargetRef:
+    name: kafka-func-consumer
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: my-cluster-kafka-bootstrap.kafka:9092
+      consumerGroup: kafka-func-consumer
+      topic: my-topic
+      lagThreshold: "10"
+      offsetResetPolicy: latest
