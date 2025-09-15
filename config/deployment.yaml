@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-func-consumer
+  labels:
+    app: kafka-func-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-func-consumer
+  template:
+    metadata:
+      labels:
+        app: kafka-func-consumer
+    spec:
+      containers:
+      - name: kafka-func-consumer
+        image: ko://github.com/matzew/kafka-func/cmd
+        env:
+        - name: KAFKA_BROKERS
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
+        - name: KAFKA_GROUP
+          value: "kafka-func-consumer"
+        - name: KAFKA_TOPICS
+          value: "my-topic"
+        args:
+        - "-brokers=$(KAFKA_BROKERS)"
+        - "-group=$(KAFKA_GROUP)"
+        - "-topics=$(KAFKA_TOPICS)"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
